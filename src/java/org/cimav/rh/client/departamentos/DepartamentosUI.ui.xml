@@ -1,0 +1,56 @@
+<!--
+Uncomment this for XHTML entities
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+-->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+             xmlns:s="urn:import:org.cimav.rh.client.departamentos"
+>
+    
+    <ui:style src="departamentosUI.css" />
+    
+    <!--    <g:DockLayoutPanel>
+        <g:center>
+            <g:VerticalPanel addStyleNames="{style.vertical-panel}">
+                <c:DataGrid ui:field='dataGrid' addStyleNames="{style.data-grid}" />
+                <g:Button >LookME</g:Button>
+            </g:VerticalPanel>
+        </g:center>
+    </g:DockLayoutPanel>-->
+    
+    <!--    <g:VerticalPanel addStyleNames="{style.vertical-panel}">-->
+    <g:DockLayoutPanel addStyleNames="{style.work-panel}">
+        <g:center >
+            <g:VerticalPanel addStyleNames="{style.vertical-panel}">
+                <g:TabLayoutPanel ui:field="tabLayout" barHeight="22" barUnit='PX' addStyleNames="{style.tab-layout-panel}">
+                    <g:tab>
+                        <g:header>Explorar</g:header>
+                        <g:DockLayoutPanel unit="EM"> 
+                            <g:center>
+                                <c:DataGrid ui:field="dataGrid" />  <!-- addStyleNames="{style.data-grid}"  -->
+                            </g:center>
+                            <g:south size="3">
+                                <g:HorizontalPanel addStyleNames="{style.buttons-bar}" >
+                                    <b:Button ui:field="btnReload" addStyleNames="{style.buttons-bar-button}">Recargar</b:Button>
+                                    <b:Button ui:field="btnAdd" addStyleNames="{style.buttons-bar-button}">Agregar</b:Button>
+                                    <b:Button ui:field="btnEditar" addStyleNames="{style.buttons-bar-button}">Editar</b:Button>
+                                    <b:Button ui:field="btnEliminar" addStyleNames="{style.buttons-bar-button}">Eliminar</b:Button>
+                                </g:HorizontalPanel>
+                            </g:south>
+                        </g:DockLayoutPanel>
+                    </g:tab>
+                    <g:tab>
+                        <g:header>Editar</g:header>
+                        <g:VerticalPanel ui:field="editorPanel">
+                            <s:DepartamentoEditorUI ui:field="departamentoEditorUI"></s:DepartamentoEditorUI>
+                        </g:VerticalPanel>
+                    </g:tab>
+                </g:TabLayoutPanel>
+            </g:VerticalPanel>
+        </g:center>
+    </g:DockLayoutPanel>
+    <!--    </g:VerticalPanel>-->
+    
+</ui:UiBinder>

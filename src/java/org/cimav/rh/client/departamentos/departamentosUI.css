@@ -1,0 +1,39 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 23, 2014, 10:37:35 AM
+    Author     : juan.calderon
+*/
+
+.work-panel {
+    position: initial !important; // de no ponerlo, no aparece
+    /*    border: 2px dotted green;
+        width: 100%;
+        height: 100%;*/
+
+}
+.vertical-panel {
+    position: initial !important; // de no ponerlo, no aparece
+    //border: 1px solid blue; 
+    width: 100%;
+    height: 100%;
+}
+.tab-layout-panel {
+    position: initial !important;
+    //border: 1px dotted blue;
+    width: 100%;
+    height: 100%;
+}
+.buttons-bar {
+    border-top: 1px solid lightgray;
+    display: block;
+}
+.buttons-bar-button {
+    margin: 3px 3px 0px 0; //top rigth bottom left
+    display: block;
+}
+
+

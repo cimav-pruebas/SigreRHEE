@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <Resource id="RH_DEV_JNDI" type="javax.sql.DataSource">#Tue Nov 25 08:51:11 MST 2014
+        jdbcDriver=org.postgresql.Driver
+        password=rh_1ser
+        userName=rh_user
+        jdbcUrl=jdbc\:postgresql\://10.0.4.40\:5432/rh_development
+    </Resource>
+</resources>
