@@ -74,7 +74,10 @@ public class DepartamentosUI extends Composite {
             public void onSelection(SelectionEvent<Integer> event) {
                 if (event.getSelectedItem() == 0) {
                     // Tab del Grid
-                    
+                    dataGrid.setWidth("100%");
+                    dataGrid.setHeight("100%");
+                    dataGrid.redraw();
+
                 } else if (event.getSelectedItem() == 1) {
                     // Tab del Editor
                 }
@@ -93,7 +96,7 @@ public class DepartamentosUI extends Composite {
             public void onClick(ClickEvent event) {
                 
                 // el nuevo debe ser id < 0 y garantizar que si el anterior tambien es nuevo, lo sustituya
-                int idNegativo = DeptoDatabase.currentDepto.getId() != null && DeptoDatabase.currentDepto.getId() <= 0 
+                int idNegativo = DeptoDatabase.currentDepto != null && DeptoDatabase.currentDepto.getId() != null && DeptoDatabase.currentDepto.getId() <= 0 
                         ? DeptoDatabase.currentDepto.getId() - 1 : -1;
                 
                 // crear nuevo Departamento
@@ -138,7 +141,8 @@ public class DepartamentosUI extends Composite {
          * change.
          */
         dataGrid = new DataGrid<>(Departamento.KEY_PROVIDER);
-        //dataGrid.setWidth("100%");
+        dataGrid.setWidth("100%");
+        dataGrid.setHeight("100%");
 
         /*
          * Do not refresh the headers every time the data is updated. The footer
