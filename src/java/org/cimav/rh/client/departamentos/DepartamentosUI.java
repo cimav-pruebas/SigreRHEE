@@ -64,16 +64,18 @@ public class DepartamentosUI extends Composite {
         
         // 1era carga de Datos
         DeptoDatabase.get().load();
-        
         // de inicio, poner en Nulo
-        // this.clearSelection();
-        
+        this.clearSelection();
+        this.updateWidgets();
         
         tabLayout.addSelectionHandler(new SelectionHandler<Integer>() {
             @Override
             public void onSelection(SelectionEvent<Integer> event) {
                 if (event.getSelectedItem() == 0) {
                     // Tab del Grid
+                    
+                    // DataGrid es un Widget tipo RequireSize; por lo tanto debe ser hijo de un widget tipo ProvidesResize. 
+                    // De lo contrario se "desaparece" al no poder ajustar a los cambios de tamaño.
                     dataGrid.setWidth("100%");
                     dataGrid.setHeight("100%");
                     dataGrid.redraw();
@@ -125,8 +127,16 @@ public class DepartamentosUI extends Composite {
         btnEliminar.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-               // clearSelection();
-                DeptoDatabase.get().refreshDisplays();
+                
+                // TODO Falta msg de autorización de remove
+
+                // keep el depto a remove
+                Departamento deptoToRemove = DeptoDatabase.currentDepto;
+                // limpia la selección
+                clearSelection();
+                updateWidgets();
+                // elimina el depto a remove
+                DeptoDatabase.get().removeDepto(deptoToRemove);
             }
         });
         
@@ -177,10 +187,7 @@ public class DepartamentosUI extends Composite {
                     departamentoEditorUI.setDepartamento(DeptoDatabase.currentDepto);
                     
                     // Actualizar botones
-                    boolean isNotNull = DeptoDatabase.currentDepto != null;
-                    btnEditar.setEnabled(isNotNull);
-                    btnEliminar.setEnabled(isNotNull);
-                    
+                    updateWidgets();                    
                 }
             }
         });
@@ -197,6 +204,17 @@ public class DepartamentosUI extends Composite {
      * Add the columns to the table.
      */
     private void initTableColumns(ListHandler<Departamento> sortHandler) {
+
+        // ID
+        Column<Departamento, String> idCol
+                = new Column<Departamento, String>(new TextCell()) {
+                    @Override
+                    public String getValue(Departamento object) {
+                        return object.getId().toString();
+                    }
+                };
+        dataGrid.addColumn(idCol, "ID");
+        dataGrid.setColumnWidth(idCol, 20, Unit.PCT);
 
         // Clave
         Column<Departamento, String> codigoCol = new Column<Departamento, String>((new TextCell())) {
@@ -230,10 +248,9 @@ public class DepartamentosUI extends Composite {
                 return o1.getNombre().compareTo(o2.getNombre());
             }
         });
-
         dataGrid.addColumn(nombreCol, "Nombre");
         dataGrid.setColumnWidth(nombreCol, 60, Unit.PCT);
-
+        
     }
 
     private void clearSelection() {
@@ -242,5 +259,9 @@ public class DepartamentosUI extends Composite {
         }
         DeptoDatabase.currentDepto = null; 
     }
-    
+    private void updateWidgets() {
+        boolean isNotNull = DeptoDatabase.currentDepto != null;
+        btnEditar.setEnabled(isNotNull);
+        btnEliminar.setEnabled(isNotNull);
+    }
 }

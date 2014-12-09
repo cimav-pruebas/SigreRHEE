@@ -7,10 +7,17 @@ package org.cimav.rh.client.departamentos;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
@@ -35,10 +42,16 @@ public final class DepartamentoEditorUI extends Composite {
     @UiField Button btnGuardar;
     @UiField Button btnCancelar;
 
-    
     com.google.gwt.user.client.ui.TextBox txtCodigo;
     com.github.gwtbootstrap.client.ui.TextBox txtNombre;
 //    com.github.gwtbootstrap.client.ui.TextArea txt3;
+
+//    @UiHandler(value = {"txtCodigo", "txtNombre"})
+//    public void onTextBoxBlur(BlurEvent e) {
+//        //set dirty flag ...
+//        System.out.println(">> " + e.getSource());
+//    }
+    
 
     public DepartamentoEditorUI() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -82,42 +95,80 @@ public final class DepartamentoEditorUI extends Composite {
         btnGuardar.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                // TODO Validar campos
-                Departamento depto = new Departamento();
-                depto.setCodigo(txtCodigo.getText());
-                depto.setNombre(txtNombre.getText());
+                // TODO falta validar
                 
-                if (currentDeptoId <= 0)  {
-                    // Nuevo Depto
-                    DeptoDatabase.get().addDepto(depto);
+                Departamento inputDepto = new Departamento();
+                inputDepto.setId(originDepto.getId());
+                inputDepto.setCodigo(txtCodigo.getValue());
+                inputDepto.setNombre(txtNombre.getValue());
+                
+                boolean isNew = inputDepto.getId() == null || inputDepto.getId() <= 0;
+                if (isNew) {
+                    DeptoDatabase.get().addDepto(inputDepto);
                 } else {
-                    // Actualizar Depto
-                    DeptoDatabase.get().updateDepto(depto);
+                    DeptoDatabase.get().updateDepto(inputDepto);
                 }
+                
+                setDepartamento(inputDepto);
+            }
+        });
+        btnCancelar.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                
+                setDepartamento(originDepto);
             }
         });
         
+        TextChange textChange = new TextChange();
+        txtCodigo.addValueChangeHandler(textChange);
+        txtNombre.addValueChangeHandler(textChange);
+        
+    }
+    
+    private boolean isDirty;
+    private boolean isNotNull;
+    
+    private class TextChange implements  ValueChangeHandler<String> {
+        @Override
+        public void onValueChange(ValueChangeEvent<String> event) {
+            isDirty = true;
+            updateWidgets();
+        }
     }
     
     //TODO Falta notificar si es nuevo o edición
     
-    private int currentDeptoId = 0;
+    private Departamento originDepto;
     
     public void setDepartamento(Departamento departamento) {
-        currentDeptoId = 0; //<< 0
-        boolean isNotNull = departamento != null;
+
+        isDirty = false;
+        isNotNull = departamento != null;
+        
+        originDepto = new Departamento();
+        
         if (isNotNull) {
+            originDepto.setId(departamento.getId());
+            originDepto.setCodigo(departamento.getCodigo());
+            originDepto.setNombre(departamento.getNombre());
+            
             txtCodigo.setText(departamento.getCodigo());
             txtNombre.setText(departamento.getNombre());
-            currentDeptoId = null == departamento.getId() ? 0 : departamento.getId(); // si el Id es null, lo pone en 0.
+            
         } else {
             txtCodigo.setText("");
             txtNombre.setText("");
         }
-        
+
+        updateWidgets();
+    }
+    
+    private void updateWidgets() {
         txtCodigo.setEnabled(isNotNull);
         txtNombre.setEnabled(isNotNull);
-        btnGuardar.setEnabled(isNotNull);
-        btnCancelar.setEnabled(isNotNull);
+        btnGuardar.setEnabled(isNotNull && isDirty);
+        btnCancelar.setEnabled(isNotNull  && isDirty);
     }
+    
 }

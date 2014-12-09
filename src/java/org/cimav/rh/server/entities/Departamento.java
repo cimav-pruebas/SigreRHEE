@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cimav.rh.shared.entities;
+package org.cimav.rh.server.entities;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Departamento.findByCodigo", query = "SELECT d FROM Departamento d WHERE d.codigo = :codigo"),
     @NamedQuery(name = "Departamento.findByNombre", query = "SELECT d FROM Departamento d WHERE d.nombre = :nombre"),
     @NamedQuery(name = "Departamento.findByStatus", query = "SELECT d FROM Departamento d WHERE d.status = :status")})
-public class EDepartamento implements Serializable {
+public class Departamento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,12 +46,12 @@ public class EDepartamento implements Serializable {
     @Column(name = "nombre")
     private String nombre;
     @Column(name = "status")
-    private Integer status;
+    private BigInteger status;
 
-    public EDepartamento() {
+    public Departamento() {
     }
 
-    public EDepartamento(Integer id) {
+    public Departamento(Integer id) {
         this.id = id;
     }
     
@@ -78,11 +79,11 @@ public class EDepartamento implements Serializable {
         this.nombre = nombre;
     }
 
-    public Integer getStatus() {
+    public BigInteger getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(BigInteger status) {
         this.status = status;
     }
 
@@ -96,10 +97,10 @@ public class EDepartamento implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EDepartamento)) {
+        if (!(object instanceof Departamento)) {
             return false;
         }
-        EDepartamento other = (EDepartamento) object;
+        Departamento other = (Departamento) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

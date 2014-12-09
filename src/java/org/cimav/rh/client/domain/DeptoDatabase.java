@@ -5,6 +5,7 @@
  */
 package org.cimav.rh.client.domain;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -27,7 +28,6 @@ public class DeptoDatabase {
     private static final String  URL_REST = "http://localhost:8080/SigreRHEE/api/departamento";
     
     public static Departamento currentDepto;
-    public static Status status;
     
     /**
      * The singleton instance of the database.
@@ -63,9 +63,12 @@ public class DeptoDatabase {
 
     public void updateDepto(Departamento depto) {
         List<Departamento> deptos = dataProvider.getList();
-        // Remove the contact first so we don't add a duplicate.
-        deptos.remove(depto); // lo remueve por el Id
-        deptos.add(depto);
+        int idx = deptos.indexOf(depto);
+        if (idx >= 0) {
+            Departamento deptoInList = deptos.get(idx);
+            deptoInList.setCodigo(depto.getCodigo());
+            deptoInList.setNombre(depto.getNombre());
+        }
     }
     
     /**
@@ -74,26 +77,24 @@ public class DeptoDatabase {
      * @param depto the DeptoInfo to add.
      */
     public void addDepto(Departamento depto) {
+
+        //Create a PersonJsonizer instance
+        Departamento.DepartamentoJsonizer dj = (Departamento.DepartamentoJsonizer)GWT.create(Departamento.DepartamentoJsonizer.class);
+        //Jsonize
+        String jsonStr = dj.asString(depto);
+        jsonStr = "{\"departamento\":{\"nombre\":\"Veracruz\",\"codigo\":\"VE\"}}";
+        System.out.println(">>> " + jsonStr);
         
-//        JAXBContext jc;
-//        Marshaller marshaller;
-//        String json;
-//        try {
-//            jc = JAXBContext.newInstance(EDepartamento.class);
-//            marshaller = jc.createMarshaller();
-//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-//            marshaller.setProperty(javax.xml.bind. . Propertie.MEDIA_TYPE, "application/json");
-//            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-//            marshaller.marshal(depto, , json);
-//
-//        } catch (JAXBException ex) {
-//            Logger.getLogger(DeptoDatabase.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        //JSONString deptoJSON = new JSONString(jsonStr);
+        JSONValue deptoJSON = new JSONString(jsonStr);
         
-        JSONValue deptoJSON = new JSONString("");
-        String urlRest = "http://localhost:8080/SigreRestRHFishA/api/departamento"; // "http://localhost:8080/SigreRestRH_A/api/departamentos";
-        Resource r = new Resource(urlRest);
-        r.post().send(new JsonCallback() {
+        HashMap<String, String> headers = new HashMap<String, String>();
+        //headers.put(Resource.HEADER_ACCEPT, "application/json; charset=utf-8");
+        headers.put(Resource.HEADER_CONTENT_TYPE, "application/json; charset=utf-8");
+        
+        Resource rb = new Resource(URL_REST, headers);
+        
+        rb.post().json(deptoJSON).send(new JsonCallback() {
             @Override
             public void onFailure(Method method, Throwable exception) {
                 Window.alert("Error: "+exception);
@@ -106,25 +107,28 @@ public class DeptoDatabase {
         
         
         List<Departamento> deptos = dataProvider.getList();
-        // Remove the contact first so we don't add a duplicate.
-        deptos.remove(depto);
-        deptos.add(depto);
+        deptos.remove(depto); // en caso de que existiera, lo elimina
+        System.out.println("Removed? " +  deptos.contains(depto) +  " ::: " + depto);
+        deptos.add(depto); // lo agrega
     }
 
     public void removeDepto(final Departamento depto) {
-        
-        Resource r = new Resource(URL_REST);
-        r.delete().send(new JsonCallback() {
-            @Override
-            public void onFailure(Method method, Throwable exception) {
-                Window.alert("Error: "+exception);
-            }
-            @Override
-            public void onSuccess(Method method, JSONValue response) {
-                List<Departamento> deptos = dataProvider.getList();
-                deptos.remove(depto);
-            }
-        });
+
+        List<Departamento> deptos = dataProvider.getList();
+        deptos.remove(depto);
+
+//        Resource r = new Resource(URL_REST);
+//        r.delete().send(new JsonCallback() {
+//            @Override
+//            public void onFailure(Method method, Throwable exception) {
+//                Window.alert("Error: "+exception);
+//            }
+//            @Override
+//            public void onSuccess(Method method, JSONValue response) {
+//                List<Departamento> deptos = dataProvider.getList();
+//                deptos.remove(depto);
+//            }
+//        });
         
     }
 
@@ -179,7 +183,7 @@ public class DeptoDatabase {
                     Integer status = (int) item.get("status").isNumber().doubleValue();
                     //Integer status = (int) item.get("status").isNumber().doubleValue();
                     Departamento depto = new Departamento(id, codigo, nombre);
-                    // Remove the contact first so we don't add a duplicate.
+                    // Remove the contact first so we don\"t add a duplicate.
                     deptosProvider.remove(depto);
                     deptosProvider.add(depto);
                 }

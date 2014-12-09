@@ -17,7 +17,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import org.cimav.rh.shared.entities.EDepartamento;
+import org.cimav.rh.server.entities.Departamento;
 
 /**
  *
@@ -25,26 +25,26 @@ import org.cimav.rh.shared.entities.EDepartamento;
  */
 @Stateless
 @Path("departamento")
-@Consumes("application/json")
-@Produces("application/json")
-public class DepartamentoFacadeREST extends AbstractFacade<EDepartamento> {
+public class DepartamentoFacadeREST extends AbstractFacade<Departamento> {
     
     @PersistenceContext(unitName = "SigreRHEEPU")
     private EntityManager em;
 
     public DepartamentoFacadeREST() {
-        super(EDepartamento.class);
+        super(Departamento.class);
     }
 
     @POST
     @Override
-    public void create(EDepartamento entity) {
+    @Consumes("application/json")
+    public void create(Departamento entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    public void edit(@PathParam("id") Integer id, EDepartamento entity) {
+    @Consumes("application/json")
+    public void edit(@PathParam("id") Integer id, Departamento entity) {
         super.edit(entity);
     }
 
@@ -56,19 +56,22 @@ public class DepartamentoFacadeREST extends AbstractFacade<EDepartamento> {
 
     @GET
     @Path("{id}")
-    public EDepartamento find(@PathParam("id") Integer id) {
+    @Produces("application/json")
+    public Departamento find(@PathParam("id") Integer id) {
         return super.find(id);
     }
 
     @GET
     @Override
-    public List<EDepartamento> findAll() {
+    @Produces("application/json")
+    public List<Departamento> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    public List<EDepartamento> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    @Produces("application/json")
+    public List<Departamento> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

@@ -14,7 +14,9 @@
 
      <!--  inherit the GWT-Bootstrap widget library -->
     <inherits name="com.github.gwtbootstrap.Bootstrap"/> 
-
+    
+    <inherits name="org.jsonmaker.gwt.Gwt_jsonmaker" />
+    
     <inherits name="org.fusesource.restygwt.RestyGWT"/>
 
     <entry-point class="org.cimav.rh.client.MainEntryPoint"/>
